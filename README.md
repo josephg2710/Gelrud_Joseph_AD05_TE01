@@ -1,47 +1,23 @@
-# AD05 - Biblioteca personal
+Desarrollar una aplicación web de temática propia con Spring Boot, Spring Data JPA, Spring MVC, Oracle, Thymeleaf y Bootstrap. Debe permitir gestionar dos entidades relacionadas y sus borrados en cascada.
 
-Aplicacion web Maven con Spring Boot, Spring MVC, Spring Data JPA, Thymeleaf, Bootstrap y Oracle XE 21c.
+Tema libre, alcance común
+Elige un contexto sencillo que te interese: por ejemplo, cuadernos y notas, proyectos y tareas o recetas y pasos. No utilices ciclistas/equipos ni artículos/opiniones, que son los ejemplos de aprendizaje y del enunciado anterior.
 
-## Modelo
-- `Libro`: entidad principal.
-- `Capitulo`: entidad dependiente.
-- Relacion bidireccional 1:N. Al eliminar un libro se eliminan sus capitulos mediante cascada JPA. Eliminar un capitulo no elimina el libro.
+Bastan dos entidades relacionadas 1:N: una principal y otra dependiente. Cada dependiente pertenece a una principal. Elige un modelo en el que tenga sentido borrar los dependientes al eliminar su principal. Una relación por sí sola no justifica borrar personas o datos compartidos.
 
-## Versiones
-- Java 17
-- Spring Boot 4.1.2
-- Oracle JDBC `ojdbc17` 23.26.4.0.0
-- Oracle XE 21c, servicio XEPDB1
+Define los campos necesarios, una identificación generada y una descripción comprensible de cada entidad. No es necesario añadir más entidades ni pedir aprobación previa si tu propuesta cumple estos requisitos. Explica brevemente el tema y la regla de borrado en tu autoevaluación.
 
-## Preparacion
-1. En SQL Developer, conectarse como administrador al servicio `XEPDB1`, nunca a `CDB$ROOT`.
-2. Editar y ejecutar una sola vez `preparar_usuario_oracle.sql`. Sustituir la clave de ejemplo y no publicarla.
-3. Definir la variable de entorno `ORACLE_PASSWORD` con la clave real.
+Puntuación: 9 puntos técnicos y 1 punto de proceso de trabajo, autoevaluación y uso transparente de IA. No hay un punto extra adicional. Las mejoras voluntarias no son necesarias para obtener un 10.
 
-Windows PowerShell:
-```powershell
-$env:ORACLE_PASSWORD="TU_CLAVE_LOCAL"
-.\mvnw spring-boot:run
-```
+IA como apoyo, no como sustituto: Puedes usar IA para comprender errores, revisar sintaxis o contrastar alternativas. No entregues código que no entiendas. Debes poder explicar y modificar tus entidades, formularios, repositorios y cascadas si el profesorado lo solicita. No usar IA no penaliza.
 
-Si no se incluye Maven Wrapper, usar Maven instalado:
-```powershell
-$env:ORACLE_PASSWORD="TU_CLAVE_LOCAL"
-mvn spring-boot:run
-```
+Qué debe incluir la aplicación
+1. Configuración y acceso a Oracle (1 punto). Crea un proyecto Maven con Spring Boot y las dependencias necesarias. Puedes utilizar el IDE Java que prefieras. Toma como referencia las versiones compatibles de los apuntes e identifica las utilizadas. Configura Oracle y deja un README breve con el arranque, el usuario/esquema y los ajustes necesarios. No incluyas contraseñas reales en el repositorio. Los datos deben persistir entre ejecuciones.
+2. Entidades y relación (1,5 puntos). Mapea las dos entidades y sus campos con anotaciones JPA. Utiliza @ManyToOne y @OneToMany(mappedBy=...) para representar la misma relación y mantén coherentes ambos extremos. El dependiente guardará una referencia a su entidad principal, no solamente un identificador numérico suelto. Las reglas del modelo deben encajar con el tema elegido.
+3. Gestión de la entidad principal (1,5 puntos). Ofrece desde la web alta, listado/consulta y edición. El formulario de edición debe mostrar los datos actuales y actualizar la fila existente, sin crear un duplicado. El borrado se valora en el apartado 5.
+4. Gestión de la entidad dependiente (2 puntos). Ofrece alta, listado/consulta y edición. El listado mostrará también un dato descriptivo de la entidad principal relacionada. Utiliza un selector con las entidades principales existentes. En edición debe aparecer la selección actual y se podrá cambiar sin duplicar ni eliminar el dependiente. No codifiques las opciones en HTML ni en Java. Comprueba en el servidor que el principal seleccionado existe. Si no hay ninguno disponible, informa de que debe crearse primero uno. El borrado se valora en el apartado 5.
+5. Borrado y cascada transaccional (1,5 puntos). Completa el borrado de ambas entidades. Al eliminar la principal se eliminarán sus dependientes mediante cascada JPA, dentro de una transacción. Borrar un dependiente no debe borrar su principal ni afectar a otros registros. Antes de confirmar, explica al usuario las consecuencias. Mostrar la confirmación no debe borrar: ejecuta el cambio por POST. No sustituyas la cascada JPA por una sucesión de borrados manuales o solo por ON DELETE CASCADE.
+6. MVC, Thymeleaf, validación y presentación (1,5 puntos). Separa controladores, servicios y repositorios Spring Data JPA; utiliza inyección por constructor. Las operaciones se realizarán desde páginas Thymeleaf, no desde una consola ni mediante JDBC directo. Incluye una página de inicio, navegación a ambas gestiones y Bootstrap, con una presentación legible y coherente. No se pide copiar el aspecto exacto de las capturas ni un diseño profesional. Valida campos obligatorios y valores acordes al modelo. Ante errores, muestra mensajes comprensibles y conserva los datos del formulario y las opciones del selector. Usa POST para los cambios y redirección tras guardarlos. Los identificadores inexistentes deben tratarse de forma controlada.
+Aplicación web local, similar a la tarea de aprendizaje 4. No se exige autenticación, API REST, pagos, despliegue público, pruebas automatizadas, concurrencia avanzada ni una funcionalidad extra.
 
-Abrir `http://localhost:8080`.
-
-Hibernate usa `spring.jpa.hibernate.ddl-auto=update`, por lo que crea y actualiza las tablas sin borrar los datos entre ejecuciones.
-
-## Comprobaciones recomendadas
-1. Crear un libro y reiniciar: debe conservarse.
-2. Editarlo: debe cambiar la misma fila.
-3. Crear un capitulo seleccionando un libro.
-4. Editar el capitulo y cambiar su libro.
-5. Eliminar un capitulo: el libro se conserva.
-6. Eliminar un libro con capitulos: se eliminan por cascada.
-7. Probar campos vacios, numero menor que 1 e identificadores inexistentes.
-
-## Seguridad del repositorio
-No subir claves, `.env`, `application-local.properties`, datos personales, ni `target/`.
+Mejoras voluntarias: Puedes añadir una mejora pequeña por interés personal, pero no es obligatoria, no añade puntos y no compensa requisitos básicos sin resolver. Prioriza que las dos gestiones y sus relaciones funcionen correctamente.
