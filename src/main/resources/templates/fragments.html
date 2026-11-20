@@ -1,0 +1,4 @@
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org"><body>
+<nav th:fragment="nav" class="navbar navbar-expand-lg navbar-dark bg-primary mb-4"><div class="container"><a class="navbar-brand" th:href="@{/}">Mi biblioteca</a><div><a class="btn btn-light me-2" th:href="@{/libros}">Libros</a><a class="btn btn-outline-light" th:href="@{/capitulos}">Capitulos</a></div></div></nav>
+<div th:fragment="avisos"><div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div><div th:if="${error}" class="alert alert-danger" th:text="${error}"></div></div>
+</body></html>
